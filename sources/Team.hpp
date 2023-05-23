@@ -1,6 +1,15 @@
 #pragma once
 #include "Character.hpp"
-#include "Team_interface.hpp"
+#include <string>
+#include <vector>
+#include <limits.h>
+#include "OldNinja.hpp"
+#include "TrainedNinja.hpp"
+#include "YoungNinja.hpp"
+#include "Cowboy.hpp"
+#include <stdexcept>
+
+using namespace std;
 namespace ariel
 {
     // This class is a group of up to ten fighters, where a fighter can be a ninja or a warrior.
@@ -9,20 +18,25 @@ namespace ariel
     // first go over all the cowboys, then go over all the ninjas.
     // Within each group, the transition will be made according to the order in which the characters were added.
     // When searching for the closest character, and two characters are at the same distance, the first character that was checked between them will be selected.
-    class Team : public Team_interface
+    class Team
     {
-    private:
+    protected:
         // vector of characters , first the cowboys and then the ninjas, in the order in which they were added to the group
         // the number of characters in both groups combined will not exceed 10
-        vector<Cowboy *> Cowboys; 
-        vector<Ninja *> Ninjas;  
+        vector<Character *> members;
+        Character *leader; // the leader of the team
+
     public:
         // Constructor that initializes the Team object with the given leader and 2 empty vectors of cowboys and ninjas and add the leader to the matching group
-        Team(Character *leader) : Team_interface(leader), Cowboys(), Ninjas(){}
+        Team(Character *leader);
         // destructor frees the memory allocated to all members of the group
-        ~Team(){}
+        ~Team();
+        // set the leader of the team
+        void setLeader(Character *chara);
         // Adding add() takes a pointer to a cowboy or ninja, and adds it to the matching group.
-        void add(Character *c){}
+        void add(Character *member);
+        // get the closest character to the leader of the group
+        Character *getClosest(Character *leader);
         // attack() receives a pointer to an enemy group.
         // Attacking the enemy group will be done in the following way:
         // First check if the leader of the attacking group is alive.
@@ -34,10 +48,10 @@ namespace ariel
         // Ninjas within 1 meter of the victim will kill the victim, and ninjas further away will advance towards the victim.
         // At each stage, if the victim is dead, a new victim will be chosen (which will be, again, the living enemy character closest to the leader of the attacking group).
         // If there are no living members in the attacking group or the enemy group the attack will end
-        void attack(Team *enemy){}
+        virtual void attack(Team *enemy);
         // stillAlive() returns an integer number of group members remaining alive.
-        int stillAlive(){return 0;}
+        int stillAlive();
         // print() goes through all the characters in the group and prints their details
-        void print(){}
+        void print();
     };
 }
